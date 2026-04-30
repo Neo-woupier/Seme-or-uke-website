@@ -1,5 +1,6 @@
 // app/page.tsx
-import { Button } from "@/components/ui/button" //
+import { Button } from "@/components/ui/button" // เรียก library มาใช้นะจ้ะๆ
+import Link from "next/link" // 👈 ต้องมีบรรทัดนี้ ไม่งั้น Link จะแดง!
 
 export default function Home() {
   return (
@@ -20,7 +21,7 @@ export default function Home() {
  
       {/* 3. Layer เนื้อหา: ซ้อนอยู่เหนือ GIF */}
       <div className="relative z-10 flex flex-col items-center justify-center text-center">
-      
+    
       <h1 className="text-8xl font-bold text-[#6DBFC2] mb-1">
         เป็น 
         {/* 2. คำว่า เมะ ที่มีเอฟเฟกต์ฟุ้งๆ สีชมพู */} 
@@ -36,14 +37,16 @@ export default function Home() {
       <p className="mt-20 text-gray-700 ">
         อยากรู้ไหม ลองตอบคำถามพวกนี้ดู (ตอบตามความรู้สีกนะ) 
       </p>
-      {/* เดี๋ยวเราจะเอาปุ่มเริ่มเกมมาใส่ตรงนี้ */}
-      
-      <Button
-        variant="pink"
-        className="mt-5 rounded-full px-8 py-6 text-lg font-semibold text-pink-700"
-        >
-        ตอบคำถามเลย~~
-      </Button>
+
+      {/*Bro </Link> ต่องปิดหน้าท้ายนะหนุ่ม*/}
+      <Link href="/quiz">
+        <Button
+          variant="pink"
+          className="mt-5 rounded-full px-8 py-6 text-lg font-semibold text-pink-700"
+          >
+          ตอบคำถามเลย~~
+        </Button>
+      </Link>
       </div>
     </main>
   );
