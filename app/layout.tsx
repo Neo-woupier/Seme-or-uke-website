@@ -1,3 +1,6 @@
+
+// app/layout.tsx
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Mali} from "next/font/google";
 import "./globals.css";
@@ -30,11 +33,25 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${mali.variable} h-full antialiased`}
+      lang="th"
+      className={`${geistSans.variable} ${geistMono.variable} 
+        ${mali.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-mali">
-         {children}
+      <body className="min-h-full font-mali relative overflow-hoidden">
+
+        {/*gif on this will show all page */}
+        
+        <img
+          src="/background.gif"
+          alt="Background"
+          className="fixed top-0 left-0 w-full h-full object-cover z-0 pointr"
+        />
+
+          {/* ต้องมี z-10 เพื่อให้อยู่เหนือ gif /  need z-10 to button or any thing will on gif */}
+          <div className="relative z-10 min-h-screen flex flex-col">
+            {children}
+          </div>
+
         </body>
     </html>
   );

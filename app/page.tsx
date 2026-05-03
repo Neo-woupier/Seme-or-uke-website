@@ -6,22 +6,7 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-24 overflow-hidden">
       
-      {/* 2. Layer พื้นหลัง: ใส่ GIF */}
-      <img
-        src="/background.gif" // 👈 อย่าลืมตรวจสอบชื่อไฟล์ GIF ของคุณใน public folder
-        alt="Background"
-        className="
-          absolute top-0 left-0 
-          w-full h-full 
-          object-cover // 👈 ทำให้ภาพ GIF ขยายคลุมพื้นที่ทั้งหมดโดยไม่เสียสัดส่วน
-          object-center // 👈 จัดให้จุดกึ่งกลางของภาพอยู่ตรงกลางหน้าจอ
-          z-0 // 👈 วางไว้ Layer ต่ำที่สุด
-        "
-      />
- 
-      {/* 3. Layer เนื้อหา: ซ้อนอยู่เหนือ GIF */}
-      <div className="relative z-10 flex flex-col items-center justify-center text-center">
-    
+      
       <h1 className="text-8xl font-bold text-[#6DBFC2] mb-1">
         เป็น 
         {/* 2. คำว่า เมะ ที่มีเอฟเฟกต์ฟุ้งๆ สีชมพู */} 
@@ -39,7 +24,7 @@ export default function Home() {
       </p>
 
       {/*Bro </Link> ต่องปิดหน้าท้ายนะหนุ่ม*/}
-      <Link href="/quiz">
+      <Link href="/quiz/q1">
         <Button
           variant="pink"
           className="mt-5 rounded-full px-8 py-6 text-lg font-semibold text-pink-700"
@@ -47,7 +32,6 @@ export default function Home() {
           ตอบคำถามเลย~~
         </Button>
       </Link>
-      </div>
     </main>
   );
 } 
