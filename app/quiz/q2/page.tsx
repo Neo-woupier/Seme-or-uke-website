@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from 'react';
 import { motion } from "framer-motion";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -13,7 +14,7 @@ const initialOptions = [
   { text: "ปฏิเสธเด็ดขาด \"ไม่ไป!\" สั้นๆ จบๆ ไม่ต้องมีข้ออ้าง", points: 5 },
 ];
 
-export default function Question2() {
+function QuizContent2() {
   const router = useRouter();
   
   // 2. รับคะแนนจากข้อที่แล้วผ่าน URL
@@ -64,5 +65,12 @@ export default function Question2() {
         ))}
       </div>
     </main>
+  );
+}
+export default function Question2() {
+  return (
+    <Suspense fallback={<div>กำลังโหลด...</div>}>
+      <QuizContent2/>
+    </Suspense>
   );
 }

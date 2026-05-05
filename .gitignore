@@ -39,3 +39,19 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# ไม่เอาไฟล์รหัสผ่าน (สมมติคุณมีไฟล์ชื่อ config.php ที่เก็บรหัสไว้)
+config.php
+
+
+# ไม่เอาไฟล์ขยะของ Windows
+Thumbs.db
+Desktop.ini
+
+# ไม่เอาไฟล์ Log หรือไฟล์ที่โปรแกรมสร้างขึ้นมาเอง
+*.log
+
+//yoo bro you don't need 
+.env*.local
+.env*
+!.env.example  <-- เพิ่มตัวตกใจ (!) แปลว่า "ยกเว้นไฟล์นี้นะ ปล่อยให้ขึ้น Git ได้"

@@ -1,9 +1,11 @@
 "use client";
 
+import { Suspense } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+
 
 // 1. ข้อมูลผลลัพธ์ (รองรับการใส่ GIF ตรง gifUrl)
 const resultData = (score: number) => {
@@ -34,12 +36,13 @@ const resultData = (score: number) => {
   };
 };
 
-export default function ResultPage() {
+function ResultPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const score = parseInt(searchParams.get("score") || "0");
   const result = resultData(score);
-
+  const [ukeCount, setUkeCount] = useState(0);
+  const [semeCount, setSemeCount] = useState(0);
   const [step, setStep] = useState(0); // 0: คุณเป็น, 1: ผลลัพธ์, 2: Leaderboard
   const [typedText, setTypedText] = useState("");
 
@@ -73,13 +76,51 @@ export default function ResultPage() {
 
   // --- 📊 Leaderboard Logic (จำลองค่ารอ Backend) ---
   // สมมติค่าจาก DB (ถ้าทำ Backend จริงต้องดึงจาก API)
-  const ukeCount = 400; 
-  const semeCount = 600;
-  const totalPlayers = ukeCount + semeCount;
+  useEffect(() => {
+  // ฟังก์ชันดึงสถิติจาก MongoDB
+  const fetchStats = async () => {
+    try {
+      // 1. ส่งผลลัพธ์ของเราไปบันทึกก่อน (สมมติ resultTitle คือชื่อโพที่ได้ เช่น "เมะตัวพ่อ")
+      await fetch('/api/status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ resultName: result.title }), 
+      });
 
-  // กัน Error หารด้วยศูนย์ (กรณีคนเล่นคนแรก)
-  const ukePercent = totalPlayers === 0 ? 50 : Math.round((ukeCount / totalPlayers) * 100);
-  const semePercent = totalPlayers === 0 ? 50 : 100 - ukePercent;
+      // 2. พอบันทึกเสร็จ ก็ดึงสถิติรวมของทุกคนมาโชว์
+      const response = await fetch('/api/status');
+      const data = await response.json();
+
+      // 3. แยกหมวดหมู่ (สมมติว่าถ้าชื่อโพมีคำว่า "เคะ" ให้รวมเป็น Uke, มีคำว่า "เมะ" ให้รวมเป็น Seme)
+      let totalUke = 0;
+      let totalSeme = 0;
+
+      if (Array.isArray(data)) {
+        data.forEach((item: any) => {
+          if (item.resultName.includes('เคะ')) {
+            totalUke += item.playCount;
+          } else if (item.resultName.includes('เมะ')) {
+            totalSeme += item.playCount;
+          }
+        });
+      }else{
+        console.log("Error: ข้อมูลที่ได้มาไม่ใช่ Array", data)
+      }
+
+      setUkeCount(totalUke);
+      setSemeCount(totalSeme);
+    } catch (err) {
+      console.error("Error fetching stats:", err);
+    }
+  };
+
+  fetchStats();
+}, []);
+
+// คำนวณ % เหมือนเดิม แต่ตอนนี้ ukeCount และ semeCount มาจาก DB แล้ว!
+const totalPlayers = ukeCount + semeCount;
+const ukePercent = totalPlayers === 0 ? 50 : Math.round((ukeCount / totalPlayers) * 100);
+const semePercent = totalPlayers === 0 ? 50 : 100 - ukePercent;
 
   return (
     <main className="flex flex-col items-center justify-center flex-grow p-6 text-center">
@@ -175,5 +216,13 @@ export default function ResultPage() {
         )}
       </AnimatePresence>
     </main>
+  );
+}
+
+export default function Question8() {
+  return (
+    <Suspense fallback={<div>กำลังโหลด...</div>}>
+      <ResultPage/>
+    </Suspense>
   );
 }

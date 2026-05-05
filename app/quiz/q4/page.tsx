@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from 'react';
 import { motion } from "framer-motion";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -13,7 +14,7 @@ const initialOptions = [
   { text: "หงุดหงิดนะ แต่ลุยแก้ปัญหาเลย! เอาให้มันจบๆ ไป(ง •̀_•́)ง", points: 5 },
 ];
 
-export default function Question4() {
+function QuizContent4() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const currentScore = parseInt(searchParams.get("score") || "0");
@@ -60,5 +61,12 @@ export default function Question4() {
         ))}
       </div>
     </main>
+  );
+}
+export default function Question4() {
+  return (
+    <Suspense fallback={<div>กำลังโหลด...</div>}>
+      <QuizContent4/>
+    </Suspense>
   );
 }
