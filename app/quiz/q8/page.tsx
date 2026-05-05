@@ -1,64 +1,179 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
-// 1. ตัวเลือกข้อ 7 ข้อสุดท้าย!
-const initialOptions = [
-  { text: "นั่งกินเงียบๆ เขี่ยๆ เอา ไม่ชอบก็ไม่กิน (•ㅅ•)", points: 1 },
-  { text: "บ่นนิดหน่อย \" ทำไมสั่งอันนี้อ่า \" แต่สุดท้ายก็กิน อยู่ดี ( ￣ー￣)💨", points: 2 },
-  { text: "กินเท่าที่กินได้ ที่เหลือก็ปล่อยไว้งั้นแหละ (눈_눈)", points: 3 },
-  { text: "เรียกพนักงานมา แล้วสั่งเมนูที่ตัวเองอยากกินเพิ่มแยกต่างหาก (≖_≖ )", points: 4 },
-  { text: "โวยเลย \"สั่งอะไรมาเนี่ย!\" แล้วจัดการสั่งเซ็ตใหม่มาคุมโต๊ะเอง (ﾟДﾟ)", points: 5 },
-];
+// 1. ข้อมูลผลลัพธ์ (รองรับการใส่ GIF ตรง gifUrl)
+const resultData = (score: number) => {
+  if (score >= 31) return {
+    title: "🔥 เมะตัวพ่อ / จ่าฝูง (The Absolute Alpha)",
+    desc: "คุณคือ 'ผู้คุมเกม' อย่างแท้จริง! เด็ดขาด ชัดเจน และมีเป้าหมาย ไม่ชอบเป็นรองใคร บุคลิกของคุณทรงพลังและดึงดูดให้คนรอบข้างยอมสยบ คุณชอบเป็นฝ่าย Take Action และจัดการทุกอย่างให้เป๊ะ ความรักของคุณคือการปกป้องและครอบครองอย่างมีชั้นเชิง ใครอยู่ใกล้จะสัมผัสได้ถึง 'ความมั่นคง' ที่แท้จริง",
+    gifUrl: "/foxx.gif"
+  };
+  if (score >= 25) return {
+    title: "☀️ เมะสายอบอุ่น (The Gentle Guardian)",
+    desc: "คุณมีออร่า 'ผู้นำ' ที่สุขุมและน่าเกรงขาม แข็งแกร่งด้วยวุฒิภาวะและความใจเย็น คุณชอบเป็นผู้ดูแล เป็นที่ปรึกษา และเป็นที่พักพิงให้คนอื่น ความสุขของคุณคือการได้เห็นคนที่รักยิ้มได้ คุณคุมสถานการณ์ได้นุ่มนวล ทำให้คนข้างกายรู้สึกปลอดภัยและพร้อมเดินตามโดยไม่มีข้อกังขา",
+    gifUrl: "/fox.gif"
+  };
+  if (score >= 19) return {
+    title: "🔄 สายสลับโพ (The Versatile Chameleon)",
+    desc: "คุณมีความยืดหยุ่นและปรับตัวเก่งมาก! ทุกอย่างขึ้นอยู่กับ 'เคมี' ของคนตรงหน้า ถ้าเขาซอฟต์ คุณพร้อมเป็นผู้นำสุดเท่ แต่ถ้าเขาสตรอง คุณก็พับความดื้อแล้วกลายเป็นคนขี้อ้อนได้อย่างเป็นธรรมชาติ คุณอ่านสถานการณ์ขาด และรู้วิธีบริหารเสน่ห์ให้เข้ากับคู่ของคุณได้อย่างยอดเยี่ยม",
+    gifUrl: "/otter.gif"
+  };
+  if (score >= 13) return {
+    title: "😼 เคะแอบซ่า / ซึนเดเระ (The Spunky Tsundere)",
+    desc: "ภายนอกดูดื้อรั้นและแอบซ่าเหมือน 'แมวส้ม' ที่พร้อมแยกเขี้ยว แต่จริงๆ นั่นคือเกราะป้องกันตัว ลึกๆ แล้วคุณนุ่มนิ่มและแพ้ทางคนจริงใจที่ดูแลคุณได้ แม้ปากจะบ่นว่ารำคาญ แต่ใจก็แอบเช็กตลอดว่าเขายังสนใจไหม คุณแค่ต้องการคนที่ 'เอาคุณอยู่' และพร้อมกอดคุณในวันที่ยอมลดกำแพงลง",
+    gifUrl: "/hamter.gif"
+  };
+  return {
+    title: "🌸 เคะตัวน้อยน่าทะนุถนอม (The Pure Heart)",
+    desc: "คุณคือคำนิยามของความนุ่มฟูและอ่อนโยน มีออร่าที่ทำให้คนรอบข้างอยากปกป้อง คุณมักจะประนีประนอมและแคร์ความรู้สึกคนอื่นเป็นที่หนึ่ง การเป็น 'ผู้ตาม' ของคุณไม่ใช่เพราะไม่มีจุดยืน แต่เพราะคุณมีความสุขกับการถูกเอาใจใส่ การมีใครสักคนคอยนำทางและเป็นเซฟโซนให้ คือสิ่งที่ดีที่สุดสำหรับคุณ",
+    gifUrl: "/rapbit.gif"
+  };
+};
 
-export default function Question7() {
+export default function ResultPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const currentScore = parseInt(searchParams.get("score") || "0");
+  const score = parseInt(searchParams.get("score") || "0");
+  const result = resultData(score);
 
-  const [options, setOptions] = useState<{text: string, points: number}[]>([]);
+  const [step, setStep] = useState(0); // 0: คุณเป็น, 1: ผลลัพธ์, 2: Leaderboard
+  const [typedText, setTypedText] = useState("");
 
+  // --- 🔒 ป้องกันการกดย้อนกลับ (Anti-Cheat) ---
   useEffect(() => {
-    const shuffled = [...initialOptions].sort(() => Math.random() - 0.5);
-    setOptions(shuffled);
+    window.history.pushState(null, "", window.location.href);
+    window.onpopstate = () => {
+      router.replace("/"); // ถ้ากดย้อนกลับ ให้เด้งไปหน้าเริ่มทันที
+    };
+  }, [router]);
+
+  // --- 🎬 Animation Sequence ---
+  useEffect(() => {
+    const timer1 = setTimeout(() => setStep(1), 1000); // ดีเลย์ 1.5 วิ ก่อนโชว์ผลลัพธ์
+    return () => clearTimeout(timer1);
   }, []);
 
-  const handleAnswer = (points: number) => {
-    const totalScore = currentScore + points;
-    // ส่งต่อไปหน้า q8 (หน้าสรุปผลที่ Bro รอคอย!)
-    router.push(`/quiz/q8?score=${totalScore}`);
-  };
+  // --- ⌨️ Typewriter Effect ---
+  useEffect(() => {
+    if (step >= 1) {
+      let i = 0;
+      const text = result.desc;
+      const interval = setInterval(() => {
+        setTypedText(text.slice(0, i));
+        i++;
+        if (i > text.length) clearInterval(interval);
+      }, 100); // ความเร็วในการพิมพ์
+      return () => clearInterval(interval);
+    }
+  }, [step, result.desc]);
 
-  if (options.length === 0) return null;
+  // --- 📊 Leaderboard Logic (จำลองค่ารอ Backend) ---
+  // สมมติค่าจาก DB (ถ้าทำ Backend จริงต้องดึงจาก API)
+  const ukeCount = 400; 
+  const semeCount = 600;
+  const totalPlayers = ukeCount + semeCount;
+
+  // กัน Error หารด้วยศูนย์ (กรณีคนเล่นคนแรก)
+  const ukePercent = totalPlayers === 0 ? 50 : Math.round((ukeCount / totalPlayers) * 100);
+  const semePercent = totalPlayers === 0 ? 50 : 100 - ukePercent;
 
   return (
-    <main className="flex flex-col items-center justify-center flex-grow p-4 md:py-8 md:px-24 w-full">
+    <main className="flex flex-col items-center justify-center flex-grow p-6 text-center">
       
-      <div className="absolute top-4 right-4 bg-white/50 px-4 py-2 rounded-full text-pink-500 font-bold text-sm">
-        คะแนนสะสม: {currentScore}
-      </div>
+      {/* 1. หัวข้อ: คุณเป็น... */}
+      {step == 0 && (
+        <motion.h2 
+          initial={{ opacity: 0 }} 
+          animate={{ opacity: 1 }}
+          className="text-8xl text-[#FF69B4] font-bold mb-2"
+        >
+          คุณ
+          <span className="mx-2 text-[#01d487] drop-shadow-[0_0_10px_rgba(255,105,180,0.8)]">
+            เป็น....
+          </span> 
+      </motion.h2>
+      )}
 
-      <h1 className="text-2xl md:text-3xl font-bold text-pink-700 bg-white/80 px-6 py-2 rounded-3xl mb-6 text-center shadow-sm w-full max-w-2xl leading-relaxed">
-        7. ไปกินข้าวกับเพื่อน แต่เพื่อนดันสั่งแต่ "ของที่คุณไม่ชอบกิน" มาเต็มโต๊ะเลย?
-      </h1>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 w-full max-w-2xl">
-        {options.map((option, index) => (
-          <motion.button
-            key={index}
-            whileHover={{ scale: 1.06 }}
-            whileTap={{ scale: 0.97 }}
-            onClick={() => handleAnswer(option.points)}
-            className={`bg-white/95 text-pink-700 font-bold py-4 px-6 rounded-2xl shadow-md border-2 border-pink-200 hover:bg-pink-200 transition-colors text-center ${
-              index === 4 ? "md:col-span-2 mx-auto w-full md:w-2/3" : "" 
-            }`}
+      <AnimatePresence>
+        {step >= 1 && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ type: "spring", damping: 12 }}
+            className="flex flex-col items-center"
           >
-            {option.text}
-          </motion.button>
-        ))}
-      </div>
+            {/* 2. ชื่อประเภท + คะแนน */}
+            <h1 className="text-4xl md:text-5xl font-black text-pink-600 mb-2 drop-shadow-lg">
+              {result.title}
+            </h1>
+            <p className="text-xl font-bold text-rose-400 mb-6">{score} คะแนน</p>
+
+            {/* 3. GIF Animation */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="w-64 h-64 rounded-3xl overflow-hidden border-4 border-white shadow-2xl mb-8"
+            >
+              <img src={result.gifUrl} alt="Result GIF" className="w-full h-full object-cover" />
+            </motion.div>
+
+            {/* 4. Description (Typewriter) */}
+            <div className="max-w-md min-h-[80px] mb-10">
+              <p className="text-lg text-gray-800 leading-relaxed font-medium">
+                {typedText}
+                <motion.span 
+                  animate={{ opacity: [0, 1, 0] }} 
+                  transition={{ repeat: Infinity, duration: 0.8 }}
+                  className="inline-block w-1 h-5 bg-pink-500 ml-1 align-middle"
+                />
+              </p>
+            </div>
+
+            {/* 5. Leaderboard HP Bar */}
+            <div className="w-full max-w-lg bg-white/80 p-6 rounded-3xl shadow-lg mb-10">
+               <p className="text-gray-500 text-sm mb-4">สถิติจากผู้เล่นทั้งหมด</p>
+               <div className="flex justify-between mb-2 font-bold text-sm">
+                  <span className="text-pink-500">เคะ {ukePercent}%</span>
+                  <span className="text-blue-500">เมะ {semePercent}%</span>
+               </div>
+               {/* หลอด HP */}
+               <div className="w-full h-8 bg-gray-200 rounded-full overflow-hidden flex border-2 border-white shadow-inner">
+                  <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ width: `${ukePercent}%` }}
+                    transition={{ duration: 1.5, ease: "easeOut" }}
+                    className="h-full bg-gradient-to-r from-pink-400 to-rose-300 flex items-center justify-center text-white text-xs"
+                  >
+                    {ukePercent > 10 && "Uke"}
+                  </motion.div>
+                  <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ width: `${semePercent}%` }}
+                    transition={{ duration: 1.5, ease: "easeOut" }}
+                    className="h-full bg-gradient-to-r from-blue-300 to-blue-500 flex items-center justify-center text-white text-xs"
+                  >
+                    {semePercent > 10 && "Seme"}
+                  </motion.div>
+               </div>
+            </div>
+
+            <Link href="/">
+               <motion.button
+                 whileHover={{ scale: 1.1 }}
+                 whileTap={{ scale: 0.9 }}
+                 className="bg-white text-pink-500 font-black py-4 px-12 rounded-full shadow-xl border-2 border-pink-100 mb-20"
+               >
+                 กลับหน้าหลัก 🏠
+               </motion.button>
+            </Link>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }
