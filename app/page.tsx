@@ -7,7 +7,7 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center justify-center p-24 overflow-hidden">
       
       
-      <h1 className="text-6xl md:text-8xl font-bold text-[#6DBFC2] mb-4 text-center leading-tight">
+      <h1 className="text-7xl md:text-10xl font-bold text-[#6DBFC2] mb-4 text-center leading-tight">
   
         {/* คำว่า "เมะ" */}
         <span className="block md:inline mx-2 text-[#FF69B4] drop-shadow-[0_0_10px_rgba(255,105,180,0.8)]">
