@@ -7,18 +7,23 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center justify-center p-24 overflow-hidden">
       
       
-      <h1 className="text-8xl font-bold text-[#6DBFC2] mb-1">
-        เป็น 
-        {/* 2. คำว่า เมะ ที่มีเอฟเฟกต์ฟุ้งๆ สีชมพู */} 
-        <span className="mx-2 text-[#FF69B4] drop-shadow-[0_0_10px_rgba(255,105,180,0.8)]">
+      <h1 className="text-6xl md:text-8xl font-bold text-[#6DBFC2] mb-4 text-center leading-tight">
+  
+        {/* คำว่า "เมะ" */}
+        <span className="block md:inline mx-2 text-[#FF69B4] drop-shadow-[0_0_10px_rgba(255,105,180,0.8)]">
           เมะ
-        </span> 
-        หรือ 
-        {/* 3. คำว่า เคะ ที่มีเอฟเฟกต์ฟุ้งๆ สีม่วงอ่อน */}
-        <span className="mx-2 text-[#BA55D3] drop-shadow-[0_0_10px_rgba(186,85,211,0.8)]">
+        </span>
+  
+        {/* คำว่า "หรือ" */}
+        <span className="block md:inline">หรือ</span>
+  
+        {/* คำว่า "เคะ" */}
+        <span className="block md:inline mx-2 text-[#BA55D3] drop-shadow-[0_0_10px_rgba(186,85,211,0.8)]">
           เคะ
-        </span> 
+        </span>
       </h1>
+
+
       <p className="mt-20 text-gray-700 ">
         อยากรู้ไหม ลองตอบคำถามพวกนี้ดู (ตอบตามความรู้สีกนะ) 
       </p>
