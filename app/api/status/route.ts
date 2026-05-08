@@ -1,11 +1,17 @@
 import { NextResponse } from 'next/server';
 import { MongoClient } from 'mongodb';
+// 1. นำเข้า headers
+import { headers } from 'next/headers';
+import { NextRequest } from 'next/server';
 
 const uri = process.env.MONGODB_URI as string;
 const client = new MongoClient(uri);
 
 // --- 📥 ขา GET: ดึงสถิติทั้งหมดมาโชว์ ---
 export async function GET() {
+  
+
+  
   try {
     await client.connect();
     const database = client.db('quiz_db');
@@ -27,6 +33,7 @@ export async function POST(request: Request) {
     const database = client.db('quiz_db');
     const collection = database.collection('stats');
 
+    
     await collection.updateOne(
       { resultName },
       { $inc: { playCount: 1 } },
