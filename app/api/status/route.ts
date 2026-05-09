@@ -20,10 +20,7 @@ export async function GET() {
     (!referer.includes("seme-or-uke-website.vercel.app") &&
       !referer.includes("localhost"))
   ) {
-    return NextResponse.json(
-      { error: "ห้ามดึงข้อมูลข้ามเว็บนะโว้ยยย!" },
-      { status: 403 },
-    );
+    return NextResponse.json({ error: "yeeeeeeeeeeeeeee" }, { status: 403 });
   }
   try {
     await client.connect();
