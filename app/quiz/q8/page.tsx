@@ -94,6 +94,7 @@ function ResultPage() {
         // 2. พอบันทึกเสร็จ ก็ดึงสถิติรวมของทุกคนมาโชว์
         const response = await fetch("/api/status");
         const data = await response.json();
+        console.log("ข้อมูลจาก DB", data);
 
         // 3. แยกหมวดหมู่ (สมมติว่าถ้าชื่อโพมีคำว่า "เคะ" ให้รวมเป็น Uke, มีคำว่า "เมะ" ให้รวมเป็น Seme)
         let totalUke = 0;
@@ -106,11 +107,11 @@ function ResultPage() {
               totalUke += item.playCount;
             } else if (item.resultName.includes("เมะ")) {
               totalSeme += item.playCount;
+            } else {
+              // ✅ พระเอกของเราอยู่ตรงนี้! ถ้าไม่มีคำว่าเคะและเมะ (เช่น สายสลับโพ) ให้บวกเข้าสายกลาง
+              totalNeutral += item.playCount;
             }
           });
-        } else if (data && data.playCount) {
-          // แก้จาก item เป็น data (หรือตัวแปรที่รับมา) เพราะมันไม่ใช่ Array
-          totalNeutral += data.playCount;
         }
 
         setUkeCount(totalUke);
