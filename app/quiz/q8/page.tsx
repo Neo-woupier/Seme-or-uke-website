@@ -103,9 +103,9 @@ function ResultPage() {
 
         if (Array.isArray(data)) {
           data.forEach((item: any) => {
-            if (item.resultName.includes("เคะ")) {
+            if (item.resultName?.includes("เคะ")) {
               totalUke += item.playCount;
-            } else if (item.resultName.includes("เมะ")) {
+            } else if (item.resultName?.includes("เมะ")) {
               totalSeme += item.playCount;
             } else {
               // ✅ พระเอกของเราอยู่ตรงนี้! ถ้าไม่มีคำว่าเคะและเมะ (เช่น สายสลับโพ) ให้บวกเข้าสายกลาง

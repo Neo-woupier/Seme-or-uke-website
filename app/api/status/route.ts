@@ -42,6 +42,9 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const { resultName } = await request.json();
+    if (!resultName) {
+      return NextResponse.json({ message: "Yo bro who is " }, { status: 400 });
+    }
     await client.connect();
     const database = client.db("quiz_db");
     const collection = database.collection("stats");
