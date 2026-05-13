@@ -1,52 +1,53 @@
 "use client";
-
-import { Suspense } from 'react';
-import { motion } from "framer-motion";
-import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { useRouter } from "next/navigation"; // 👈 ถอด useSearchParams ออก!
 
-// 1. เปลี่ยนคำตอบและคะแนนเป็นของข้อ 2
 const initialOptions = [
   { text: "เพื่อนชวนทั้งทีนะ (ถึงไม่อยากไปก็เถอะ) แต่ก็ไป~~", points: 1 },
-  { text: "หาข้ออ้างแบบเนียนๆ \"พอดีติดธุระที่บ้านอ่ะ โทษทีน้า\"", points: 2 },
-  { text: "ไปด้วยก็ได้ แต่ถ้าเบื่อเมื่อไหร่ขอชิ่งกลับก่อนนะ |-_-|||", points: 3 },
-  { text: "บอกไปตรงๆ เลยว่า \"ขี้เกียจอ่ะ ขอนอน ไว้คราวหน้านะ\"", points: 4 },
-  { text: "ปฏิเสธเด็ดขาด \"ไม่ไป!\" สั้นๆ จบๆ ไม่ต้องมีข้ออ้าง", points: 5 },
+  { text: 'หาข้ออ้างแบบเนียนๆ "พอดีติดธุระที่บ้านอ่ะ โทษทีน้า"', points: 2 },
+  {
+    text: "ไปด้วยก็ได้ แต่ถ้าเบื่อเมื่อไหร่ขอชิ่งกลับก่อนนะ |-_-|||",
+    points: 3,
+  },
+  { text: 'บอกไปตรงๆ เลยว่า "ขี้เกียจอ่ะ ขอนอน ไว้คราวหน้านะ"', points: 4 },
+  { text: 'ปฏิเสธเด็ดขาด "ไม่ไป!" สั้นๆ จบๆ ไม่ต้องมีข้ออ้าง', points: 5 },
 ];
 
-function QuizContent2() {
+export default function QuizContent2() {
   const router = useRouter();
-  
-  // 2. รับคะแนนจากข้อที่แล้วผ่าน URL
-  const searchParams = useSearchParams();
-  const currentScore = parseInt(searchParams.get("score") || "0");
+  const [options, setOptions] = useState<{ text: string; points: number }[]>(
+    [],
+  );
+  const [currentScore, setCurrentScore] = useState(0); // 🔥 ใช้ State แทนการดึงจาก URL
 
-  const [options, setOptions] = useState<{text: string, points: number}[]>([]);
-
-  // 3. สุ่มลำดับ (Shuffle)
   useEffect(() => {
+    // 1. สุ่มลำดับ
     const shuffled = [...initialOptions].sort(() => Math.random() - 0.5);
     setOptions(shuffled);
+
+    // 2. ล้วงกระเป๋า sessionStorage เพื่อดูคะแนนจากข้อ 1
+    const saved = sessionStorage.getItem("user_score") || "0";
+    setCurrentScore(parseInt(saved));
   }, []);
 
   const handleAnswer = (points: number) => {
-    // 4. เอาคะแนนเก่า + คะแนนใหม่ แล้วส่งไปหน้า q3
     const totalScore = currentScore + points;
-    router.push(`/quiz/q3?score=${totalScore}`);
+    sessionStorage.setItem("user_score", totalScore.toString());
+    router.push("/quiz/q3"); // ไปต่อข้อ 3 แบบคลีนๆ
   };
 
   if (options.length === 0) return null;
 
   return (
     <main className="flex flex-col items-center justify-center flex-grow p-4 md:py-8 md:px-24 w-full">
-      
-      {/* (ลบออกได้นะ) ใส่ไว้ให้ Bro ดูว่าคะแนนมันถูกส่งมาจริงไหม */}
-      <div className="absolute top-4 right-4 bg-white/50 px-4 py-2 rounded-full text-pink-500 font-bold text-sm">
+      <div className="absolute top-4 right-4 bg-white/50 px-4 py-2 rounded-full text-pink-500 font-bold text-sm shadow-sm border border-pink-100">
         คะแนนสะสม: {currentScore}
       </div>
 
       <h1 className="text-2xl md:text-3xl font-bold text-pink-700 bg-white/80 px-6 py-2 rounded-3xl mb-6 text-center shadow-sm w-full max-w-2xl leading-relaxed">
-        2. วันหยุดว่างๆ เพื่อนทักมาชวนไปเที่ยว แต่ใจจริงคุณ "ขี้เกียจไป" คุณจะทำยังไง?
+        2. วันหยุดว่างๆ เพื่อนทักมาชวนไปเที่ยว แต่ใจจริงคุณ "ขี้เกียจไป"
+        คุณจะทำยังไง?
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 w-full max-w-2xl">
@@ -57,7 +58,7 @@ function QuizContent2() {
             whileTap={{ scale: 0.97 }}
             onClick={() => handleAnswer(option.points)}
             className={`bg-white/95 text-pink-700 font-bold py-4 px-6 rounded-2xl shadow-md border-2 border-pink-200 hover:bg-pink-200 transition-colors text-center ${
-              index === 4 ? "md:col-span-2 mx-auto w-full md:w-2/3" : "" 
+              index === 4 ? "md:col-span-2 mx-auto w-full md:w-2/3" : ""
             }`}
           >
             {option.text}
@@ -65,12 +66,5 @@ function QuizContent2() {
         ))}
       </div>
     </main>
-  );
-}
-export default function Question2() {
-  return (
-    <Suspense fallback={<div>กำลังโหลด...</div>}>
-      <QuizContent2/>
-    </Suspense>
   );
 }

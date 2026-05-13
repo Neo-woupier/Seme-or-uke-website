@@ -1,8 +1,8 @@
 "use client";
 
-import { Suspense } from 'react';
+import { Suspense } from "react";
 import { motion } from "framer-motion";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 // 1. ตัวเลือกข้อ 6 พร้อมอีโมจิสายเที่ยว
@@ -11,32 +11,45 @@ const initialOptions = [
   { text: "สวนสนุก ดูหนัง หาของอร่อยๆ กิน เน้นเฮฮา ヘ( ^v^)ノ", points: 2 },
   { text: "เดินห้าง ช้อปปิ้งสบายๆ แวะกินข้าว แล้วกลับ(〃‿〃)", points: 3 },
   { text: "ขับรถเที่ยวต่างจังหวัด จัดทริปเองลุยเอง ~(￣▽￣～)", points: 4 },
-  { text: "แอดเวนเจอร์จัดเต็ม! บุกป่า ปีนเขา กิจกรรมเน้นๆ (๑˃ᴗ˂)🥤", points: 5 },
+  {
+    text: "แอดเวนเจอร์จัดเต็ม! บุกป่า ปีนเขา กิจกรรมเน้นๆ (๑˃ᴗ˂)🥤",
+    points: 5,
+  },
 ];
 
-function QuizContent6() {
+export default function QuizContent6() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const currentScore = parseInt(searchParams.get("score") || "0");
-
-  const [options, setOptions] = useState<{text: string, points: number}[]>([]);
+  const [options, setOptions] = useState<{ text: string; points: number }[]>(
+    [],
+  );
+  const [currentScore, setCurrentScore] = useState(0); // 🔥 ใช้ State แทนการดึงจาก URL
 
   useEffect(() => {
     const shuffled = [...initialOptions].sort(() => Math.random() - 0.5);
     setOptions(shuffled);
+    // 2. ล้วงกระเป๋า sessionStorage เพื่อดูคะแนนจากข้อ 1
+    const saved = sessionStorage.getItem("user_score") || "0";
+    setCurrentScore(parseInt(saved));
   }, []);
 
   const handleAnswer = (points: number) => {
+    // ดึงคะแนนเดิมจากกระเป๋าตังค์ (ถ้าไม่มีให้เป็น 0)
+    const currentScore = parseInt(sessionStorage.getItem("user_score") || "0");
+
+    // บวกคะแนนใหม่เข้าไป
     const totalScore = currentScore + points;
-    // ส่งต่อไปหน้า q7
-    router.push(`/quiz/q7?score=${totalScore}`);
+
+    // เซฟกลับลงกระเป๋าตังค์
+    sessionStorage.setItem("user_score", totalScore.toString());
+
+    // วาร์ปไปหน้าถัดไป (อย่าลืมแก้เลข q ให้ตรงกับหน้าถัดไปนะพี่!)
+    router.push("/quiz/q7");
   };
 
   if (options.length === 0) return null;
 
   return (
     <main className="flex flex-col items-center justify-center flex-grow p-4 md:py-8 md:px-24 w-full">
-      
       <div className="absolute top-4 right-4 bg-white/50 px-4 py-2 rounded-full text-pink-500 font-bold text-sm">
         คะแนนสะสม: {currentScore}
       </div>
@@ -53,7 +66,7 @@ function QuizContent6() {
             whileTap={{ scale: 0.97 }}
             onClick={() => handleAnswer(option.points)}
             className={`bg-white/95 text-pink-700 font-bold py-4 px-6 rounded-2xl shadow-md border-2 border-pink-200 hover:bg-pink-200 transition-colors text-center ${
-              index === 4 ? "md:col-span-2 mx-auto w-full md:w-2/3" : "" 
+              index === 4 ? "md:col-span-2 mx-auto w-full md:w-2/3" : ""
             }`}
           >
             {option.text}
@@ -61,12 +74,5 @@ function QuizContent6() {
         ))}
       </div>
     </main>
-  );
-}
-export default function Question6() {
-  return (
-    <Suspense fallback={<div>กำลังโหลด...</div>}>
-      <QuizContent6/>
-    </Suspense>
   );
 }
