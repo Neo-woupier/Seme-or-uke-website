@@ -22,27 +22,20 @@ export default function QuizContent6() {
   const [options, setOptions] = useState<{ text: string; points: number }[]>(
     [],
   );
-  const [currentScore, setCurrentScore] = useState(0); // 🔥 ใช้ State แทนการดึงจาก URL
-
+  const [currentScore, setCurrentScore] = useState(0);
   useEffect(() => {
     const shuffled = [...initialOptions].sort(() => Math.random() - 0.5);
     setOptions(shuffled);
-    // 2. ล้วงกระเป๋า sessionStorage เพื่อดูคะแนนจากข้อ 1
     const saved = sessionStorage.getItem("user_score") || "0";
     setCurrentScore(parseInt(saved));
   }, []);
 
   const handleAnswer = (points: number) => {
-    // ดึงคะแนนเดิมจากกระเป๋าตังค์ (ถ้าไม่มีให้เป็น 0)
     const currentScore = parseInt(sessionStorage.getItem("user_score") || "0");
-
-    // บวกคะแนนใหม่เข้าไป
     const totalScore = currentScore + points;
 
-    // เซฟกลับลงกระเป๋าตังค์
     sessionStorage.setItem("user_score", totalScore.toString());
 
-    // วาร์ปไปหน้าถัดไป (อย่าลืมแก้เลข q ให้ตรงกับหน้าถัดไปนะพี่!)
     router.push("/quiz/q7");
   };
 

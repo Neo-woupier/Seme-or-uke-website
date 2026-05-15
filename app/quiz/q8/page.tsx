@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-// 1. ข้อมูลผลลัพธ์ (รองรับการใส่ GIF ตรง gifUrl)
 const resultData = (score: number) => {
   if (score >= 31)
     return {
@@ -143,7 +142,6 @@ export default function ResultPage() {
   const semePercent =
     totalPlayers === 0 ? 33 : 100 - (ukePercent + neutralPercent);
 
-  // ✅ บรรทัด return นี้ อยู่ถูกที่แล้ว แน่นอน 100%
   return (
     <main className="flex flex-col items-center justify-center min-h-screen  text-center">
       {/* 1. หัวข้อ: คุณเป็น... */}

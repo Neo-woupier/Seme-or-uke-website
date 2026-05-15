@@ -1,11 +1,9 @@
 "use client";
 
-import { Suspense } from "react";
 import { motion } from "framer-motion";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-// 1. ตัวเลือกข้อ 4 พร้อมอีโมจิสุดคิวท์
 const initialOptions = [
   { text: "ตกใจและอึ้งไปเลย แต่สติ ๆๆ (°ロ°) !", points: 1 },
   {
@@ -23,31 +21,24 @@ const initialOptions = [
   { text: "หงุดหงิดนะ แต่ลุยแก้ปัญหาเลย! เอาให้มันจบๆ ไป(ง •̀_•́)ง", points: 5 },
 ];
 
-function QuizContent4() {
+export default function QuizContent4() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const currentScore = parseInt(searchParams.get("score") || "0");
-
   const [options, setOptions] = useState<{ text: string; points: number }[]>(
     [],
   );
+  const [currentScore, setCurrentScore] = useState(0); // 🔥 ใช้ State แทนการดึงจาก URL
 
   useEffect(() => {
     const shuffled = [...initialOptions].sort(() => Math.random() - 0.5);
     setOptions(shuffled);
+    const saved = sessionStorage.getItem("user_score") || "0";
+    setCurrentScore(parseInt(saved));
   }, []);
 
   const handleAnswer = (points: number) => {
-    // ดึงคะแนนเดิมจากกระเป๋าตังค์ (ถ้าไม่มีให้เป็น 0)
     const currentScore = parseInt(sessionStorage.getItem("user_score") || "0");
-
-    // บวกคะแนนใหม่เข้าไป
     const totalScore = currentScore + points;
-
-    // เซฟกลับลงกระเป๋าตังค์
     sessionStorage.setItem("user_score", totalScore.toString());
-
-    // วาร์ปไปหน้าถัดไป (อย่าลืมแก้เลข q ให้ตรงกับหน้าถัดไปนะพี่!)
     router.push("/quiz/q5");
   };
 
@@ -80,12 +71,5 @@ function QuizContent4() {
         ))}
       </div>
     </main>
-  );
-}
-export default function Question4() {
-  return (
-    <Suspense fallback={<div>กำลังโหลด...</div>}>
-      <QuizContent4 />
-    </Suspense>
   );
 }

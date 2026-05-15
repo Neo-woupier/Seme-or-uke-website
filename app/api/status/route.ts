@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import { MongoClient } from "mongodb";
-// 1. นำเข้า headers
 import { headers } from "next/headers";
-import { NextRequest } from "next/server";
 
 const uri = process.env.MONGODB_URI as string;
 const client = new MongoClient(uri);

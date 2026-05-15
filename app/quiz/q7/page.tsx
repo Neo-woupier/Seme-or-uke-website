@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-// 1. ตัวเลือกข้อ 7 ข้อสุดท้าย!
 const initialOptions = [
   { text: "นั่งกินเงียบๆ เขี่ยๆ เอา ไม่ชอบก็ไม่กิน (•ㅅ•)", points: 1 },
   {
@@ -26,7 +25,7 @@ export default function QuizContent7() {
   const [options, setOptions] = useState<{ text: string; points: number }[]>(
     [],
   );
-  const [currentScore, setCurrentScore] = useState(0); // 🔥 ใช้ State แทนการดึงจาก URL
+  const [currentScore, setCurrentScore] = useState(0);
 
   useEffect(() => {
     const shuffled = [...initialOptions].sort(() => Math.random() - 0.5);
@@ -36,16 +35,11 @@ export default function QuizContent7() {
   }, []);
 
   const handleAnswer = (points: number) => {
-    // ดึงคะแนนเดิมจากกระเป๋าตังค์ (ถ้าไม่มีให้เป็น 0)
     const currentScore = parseInt(sessionStorage.getItem("user_score") || "0");
-
-    // บวกคะแนนใหม่เข้าไป
     const totalScore = currentScore + points;
 
-    // เซฟกลับลงกระเป๋าตังค์
     sessionStorage.setItem("user_score", totalScore.toString());
 
-    // วาร์ปไปหน้าถัดไป (อย่าลืมแก้เลข q ให้ตรงกับหน้าถัดไปนะพี่!)
     router.push("/quiz/q8");
   };
 

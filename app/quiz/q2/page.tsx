@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { useRouter } from "next/navigation"; // 👈 ถอด useSearchParams ออก!
+import { useRouter } from "next/navigation";
 
 const initialOptions = [
   { text: "เพื่อนชวนทั้งทีนะ (ถึงไม่อยากไปก็เถอะ) แต่ก็ไป~~", points: 1 },
@@ -19,14 +19,12 @@ export default function QuizContent2() {
   const [options, setOptions] = useState<{ text: string; points: number }[]>(
     [],
   );
-  const [currentScore, setCurrentScore] = useState(0); // 🔥 ใช้ State แทนการดึงจาก URL
+  const [currentScore, setCurrentScore] = useState(0);
 
   useEffect(() => {
-    // 1. สุ่มลำดับ
     const shuffled = [...initialOptions].sort(() => Math.random() - 0.5);
     setOptions(shuffled);
 
-    // 2. ล้วงกระเป๋า sessionStorage เพื่อดูคะแนนจากข้อ 1
     const saved = sessionStorage.getItem("user_score") || "0";
     setCurrentScore(parseInt(saved));
   }, []);
@@ -34,7 +32,7 @@ export default function QuizContent2() {
   const handleAnswer = (points: number) => {
     const totalScore = currentScore + points;
     sessionStorage.setItem("user_score", totalScore.toString());
-    router.push("/quiz/q3"); // ไปต่อข้อ 3 แบบคลีนๆ
+    router.push("/quiz/q3");
   };
 
   if (options.length === 0) return null;
