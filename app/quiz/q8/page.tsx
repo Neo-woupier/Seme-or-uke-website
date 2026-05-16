@@ -1,10 +1,15 @@
-"use client";
+"use client"; // [CLIENT-SIDE ONLY] ต้องใช้เพื่ออ่านค่าจาก sessionStorage และทำ Animation
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion"; // [ANIMATION] motion = ขยับ, AnimatePresence = จัดการตอน element หายไป
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import Link from "next/link";
-
+import Link from "next/link"; // [NAVIGATION] ใช้สำหรับปุ่ม "กลับหน้าแรก" แบบประหยัดทรัพยากร
+/*
+  logic: result determination
+  - ฟังก์ชันนี้คือ "เครื่องตัดสิน" ว่าคะแนนรวม (Score) จะได้ผลลัพธ์เป็นอะไร
+  - Input: score (ตัวเลขคะแนนสะสมทั้งหมดจากทุกข้อ
+  - Output: Object ที่เก็บ { รูปภาพ/GIF }
+*/
 const resultData = (score: number) => {
   if (score >= 31)
     return {
@@ -38,6 +43,11 @@ const resultData = (score: number) => {
 };
 
 export default function ResultPage() {
+  /*
+    score & stats state 
+    - score: คะแนนรวมที่ดึงมาจาก sessionStorage (เริ่มเป็น null เพื่อเช็คว่าโหลดเสร็จหรือยัง)
+    - 
+  */
   const router = useRouter();
   const [score, setScore] = useState<number | null>(null);
   const [neutralCount, setNeutralCount] = useState(0);
@@ -49,11 +59,13 @@ export default function ResultPage() {
 
   // --- 🛡️ ดึงคะแนนจาก Session ---
   useEffect(() => {
+    // ถ้าไม่มีคะแนนใน Session ให้ดีดกลับหน้าแรกทันที
     const savedScore = sessionStorage.getItem("user_score");
     if (savedScore === null) {
       router.replace("/");
       return;
     }
+    // แปลงค่าและจำกัดคะแนนสูงสุด (Cap Score) ไม่ให้เกินค่าที่กำหนด
     const finalScore = parseInt(savedScore);
     setScore(finalScore > 40 ? 40 : finalScore);
   }, [router]);
@@ -61,9 +73,12 @@ export default function ResultPage() {
   // --- 📊 Leaderboard Logic ---
   useEffect(() => {
     if (score === null) return;
-
+    /*
+      ร้าง AbortController เพื่อป้องกัน Race Condition เมื่อ Dependencies เปลี่ยน
+    */
     const fetchStats = async () => {
       try {
+        // ส่งค่าไปยัง Server
         await fetch("/api/status", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -78,6 +93,12 @@ export default function ResultPage() {
           totalNeutral = 0;
 
         if (Array.isArray(data)) {
+          /*
+            ตรวจสอบและวนลูปเพื่อจัดกลุ่มคะแนนตามคำสำคัญ (Keywords)
+            - เช็คคำว่า "เคะ" ในชื่อผลลัพธ์เพื่อสะสมยอด
+            - เช็คคำว่า "เมะ" ในชื่อผลลัพธ์เพื่อสะสมยอด
+            - ถ้าไม่ตรงกับเงื่อนไขใดๆ ให้ปัดเป็นประเภททั่วไป (Neutral)
+          */
           data.forEach((item: any) => {
             if (item.resultName?.includes("เคะ")) totalUke += item.playCount;
             else if (item.resultName?.includes("เมะ"))
@@ -86,6 +107,7 @@ export default function ResultPage() {
           });
         }
 
+        // อัปเดตค่า
         setUkeCount(totalUke);
         setSemeCount(totalSeme);
         setNeutralCount(totalNeutral);
@@ -112,16 +134,27 @@ export default function ResultPage() {
   }, []);
 
   useEffect(() => {
+    /*
+      Guard clause: จะเริ่มพิมพ์เมื่อข้ามขั้นตอนแรก และมีคะแนนพร้อมแล้วเท่านั้น ---
+    */
     if (step >= 1 && score !== null) {
       let i = 0;
       const text = result.desc;
       const interval = setInterval(() => {
+        /*
+          Tryping:
+          - ค่อยๆ แตกตัวอักษรจากตำแหน่งที่ 0 ถึง index ปัจจุบัน
+          - เมื่อพิมพ์ครบทุกตัวอักษรแล้ว ให้เคลียร์ Interval ทันที        
+        */
         setTypedText(text.slice(0, i));
         i++;
         if (i > text.length) clearInterval(interval);
       }, 50);
+      // Cleanup Function: ล้างหน่วยความจำเมื่อ Component เปลี่ยนหน้าหรือ Unmount ---
       return () => clearInterval(interval);
     }
+
+    ///// ดึงเฉพาะตัวแปรดิบที่จำเป็นเข้า Dependency Array เพื่อลดปัญหา Re-render ซ้ำซ้อน
   }, [step, score, result.desc]);
 
   // 🛑 ถ้าคะแนนยังโหลดไม่เสร็จ ให้โชว์ Loading
