@@ -62,3 +62,18 @@ The system queries the backend database and groups the community counts based on
   <img src="https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind" />
   <img src="https://img.shields.io/badge/TypeScript-v5.x-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript Version" />
 </p>
+
+### 🖥️ Frontend
+
+- **Framework:** Next.js 16 (App Router with React Server Components)
+- **Core Library:** React 19 (Advanced Hooks & Performance Optimizations)
+- **Language:** TypeScript (Strict Type-Safety)
+- **Styling & Design:** Tailwind CSS v4 (PostCSS Optimized) + Shadcn UI (Radix Primitives)
+- **Animation:** Framer Motion (Fluid Layout Transitions)
+- **State Management:** Native React Hooks with Browser `sessionStorage`
+
+### ⚙️ Backend & Database
+
+- **Framework:** Next.js Route Handlers (Built-in Serverless API Endpoints)
+- **Database:** MongoDB (Native Node.js Driver Integration)
+- **Architecture:** Monolithic Full-Stack Structure with Server/Client separation boundaries
