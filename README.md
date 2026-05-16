@@ -168,3 +168,9 @@ Here is a quick overview of your repository's key directories and core configura
 ├── 📂 next.config.ts        # Next.js framework system custom options
 └── 📂 package.json          # Project metadata, script commands, and dependencies
 ```
+
+---
+
+## 📖 เอกสารเชิงลึกสำหรับนักพัฒนา (Developer Documentation)
+
+- [รายงานการปรับปรุงสถาปัตยกรรมและระบบคะแนน](./docs/architecture-redesign.md)
