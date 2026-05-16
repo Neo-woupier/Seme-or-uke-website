@@ -77,3 +77,28 @@ The system queries the backend database and groups the community counts based on
 - **Framework:** Next.js Route Handlers (Built-in Serverless API Endpoints)
 - **Database:** MongoDB (Native Node.js Driver Integration)
 - **Architecture:** Monolithic Full-Stack Structure with Server/Client separation boundaries
+
+---
+
+## 🚀 Getting Started
+
+Want to contribute, tweak the quiz logic, or just run the project locally? Follow these instructions to get a copy of the project up and running on your machine!
+
+### Prerequisites
+
+Before you begin, make sure you have the following installed:
+
+- **[Node.js](https://nodejs.org/)** (v18.17 or higher recommended for Next.js 16)
+- **npm** (comes with Node.js), **yarn**, or **pnpm**
+- **[MongoDB](https://www.mongodb.com/atlas/database)** (A free MongoDB Atlas cluster or a local instance for storing quiz statistics)
+
+---
+
+### 1. Clone the Repository
+
+First, clone the project to your local machine and navigate into the directory:
+
+```bash
+git clone [https://github.com/neo-woupier/semeoruke.git](https://github.com/neo-woupier/semeoruke.git)
+cd semeoruke
+```
