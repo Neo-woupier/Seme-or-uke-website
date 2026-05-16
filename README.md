@@ -99,6 +99,72 @@ Before you begin, make sure you have the following installed:
 First, clone the project to your local machine and navigate into the directory:
 
 ```bash
-git clone [https://github.com/neo-woupier/semeoruke.git](https://github.com/neo-woupier/semeoruke.git)
+git clone https://github.com/neo-woupier/semeoruke.git
 cd semeoruke
+```
+
+### 2. Install Dependencies
+
+Install all the required packages (React, Tailwind, Framer Motion, etc.) using your package manager:
+
+```bash
+npm install
+```
+
+### 3. Configure Environment Variables
+
+This application requires a MongoDB connection to store and aggregate quiz statistics in real-time.
+
+- Create a new file named .env.local in the root directory.
+- Open .env.example to see the required configuration.
+- Paste your MongoDB connection string into your .env.local file:
+
+```bash
+MONGODB_URI=mongodb+srv://<username>:<password>@cluster...
+```
+
+### 4. Run the Development Server
+
+Start the local Next.js development server with hot-reloading enabled:
+
+```bash
+npm run dev
+```
+
+### 5. Open and Explore 🎮
+
+Open your favorite browser and navigate to:
+
+```bash
+http://localhost:3000
+```
+
+---
+
+## 📂 Project Structure
+
+Here is a quick overview of your repository's key directories and core configuration files:
+
+### 🖥️ Frontend Architecture
+
+```bash
+├── 📂 app/                  # Next.js App Router (Client views & layout)
+│   ├── 📂 globals.css       # Global styling integrated with Tailwind CSS v4
+│   ├── 📂 page.tsx          # Main quiz landing page component
+│   └── 📂 quiz              # Core quiz module wrapper
+│       ├── 📂 q1 - q7       # Sequential quiz question routes (Steps 1 to 7)
+│       └── 📂 q8            # Final question route & transition handler before results
+├── 📂 components/           # Reusable UI components (Shadcn UI & custom elements)
+├── 📂 public/               # Static assets (Images, screenshots, icons)
+```
+
+### ⚙️ Backend & Configuration Layer
+
+```bash
+├── 📂 app/api/              # Backend API routes (Serverless endpoints like /api/status)
+├── 📂 lib/                  # Server utilities (Native MongoDB connection helpers)
+├── 📂 .env.example          # Template schema for environment variables
+├── 📂 components.json       # Shadcn UI path and style alias configuration
+├── 📂 next.config.ts        # Next.js framework system custom options
+└── 📂 package.json          # Project metadata, script commands, and dependencies
 ```
