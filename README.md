@@ -173,4 +173,4 @@ Here is a quick overview of your repository's key directories and core configura
 
 ## 📖 เอกสารเชิงลึกสำหรับนักพัฒนา (Developer Documentation)
 
-- [รายงานการปรับปรุงสถาปัตยกรรมและระบบคะแนน](./docs/architecture-redesign.md)
+- [Comprehensive Engineering Report : รายงานการปรับปรุงสถาปัตยกรรมและระบบคะแนน](./docs/architecture-redesign.md)
