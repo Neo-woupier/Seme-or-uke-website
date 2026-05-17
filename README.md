@@ -171,6 +171,6 @@ Here is a quick overview of your repository's key directories and core configura
 
 ---
 
-## 📖 เอกสารเชิงลึกสำหรับนักพัฒนา (Developer Documentation)
+## 📖 Developer Documentation (เอกสารเชิงลึกสำหรับนักพัฒน)
 
 - [Comprehensive Engineering Report : รายงานการปรับปรุงสถาปัตยกรรมและระบบคะแนน](./docs/architecture-redesign.md)
